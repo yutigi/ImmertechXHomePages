@@ -24,6 +24,7 @@ camera.position.set(0,1,2)
 const renderer = new THREE.WebGLRenderer()
 renderer.physicallyCorrectLights = true
 renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.toneMapping = THREE.ReinhardToneMapping;
 document.body.appendChild(renderer.domElement)
 
 // post process
@@ -33,9 +34,9 @@ composer.addPass( renderPass );
 
 const params = {
     exposure: 1,
-    bloomStrength: 10,
+    bloomStrength: 1.2,
     bloomThreshold: 0.1,
-    bloomRadius: 1
+    bloomRadius: 0.5
 };
 // Unreal Bloom
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
@@ -104,6 +105,7 @@ function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
+    composer.setSize(window.innerWidth, window.innerHeight)
     render()
 }
 
@@ -230,7 +232,8 @@ function animate() {
 }
 
 function render() {
-    renderer.render(scene, camera)
+    composer.render()
+    //renderer.render(scene, camera)
 }
 
 window.scrollTo({ top: 0, behavior: 'smooth' })
