@@ -1,5 +1,11 @@
 import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import Stats from 'three/examples/jsm/libs/stats.module'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { AnimationMixer, Clock } from 'three';
+
 
 const scene = new THREE.Scene()
 
@@ -13,19 +19,85 @@ const camera = new THREE.PerspectiveCamera(
     1000
 )
 
+camera.position.set(0,1,2)
+
 const renderer = new THREE.WebGLRenderer()
+renderer.physicallyCorrectLights = true
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-const geometry = new THREE.BoxGeometry()
-const material = new THREE.MeshBasicMaterial({
-    color: 0x00ff00,
-    wireframe: true,
-})
+// post process
+const composer = new EffectComposer( renderer )
+const renderPass = new RenderPass( scene, camera );
+composer.addPass( renderPass );
 
-const cube = new THREE.Mesh(geometry, material)
-cube.position.set(0, 0.5, -10)
-scene.add(cube)
+const params = {
+    exposure: 1,
+    bloomStrength: 10,
+    bloomThreshold: 0.1,
+    bloomRadius: 1
+};
+// Unreal Bloom
+const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+bloomPass.threshold = params.bloomThreshold;
+bloomPass.strength = params.bloomStrength;
+bloomPass.radius = params.bloomRadius;
+composer.addPass( bloomPass );
+
+
+// const geometry = new THREE.BoxGeometry()
+// const material = new THREE.MeshBasicMaterial({
+//     color: 0x00ff00,
+//     wireframe: true,
+// })
+
+// const cube = new THREE.Mesh(geometry, material)
+// cube.position.set(0, 0.5, -10)
+// scene.add(cube)
+
+// animation mixer
+let mixer:AnimationMixer, clock:Clock;
+clock = new THREE.Clock()
+
+const loader = new GLTFLoader()
+loader.load(
+    './models/ImmertechLogo.glb',
+    function (gltf) {
+        gltf.scene.traverse(function (child) {
+            if ((child as THREE.Mesh).isMesh) {
+                const m = (child as THREE.Mesh)
+                //m.receiveShadow = true
+                //m.castShadow = true
+            }
+        //     if (((child as THREE.Light)).isLight) {
+        //         const l = (child as THREE.Light)
+        //         l.castShadow = true
+        //         l.shadow.bias = -.003
+        //         l.shadow.mapSize.width = 2048
+        //         l.shadow.mapSize.height = 2048
+        //     }
+        })
+        gltf.scene.scale.set(0.1,0.1,0.1)
+        gltf.scene.position.set(0,1,0)
+
+        mixer = new THREE.AnimationMixer( gltf.scene )
+        for (let index = 0; index < gltf.animations.length; index++) {
+            //AnimationsSeq.push(gltf.animations[index])
+            const clip = gltf.animations[index]
+            mixer.clipAction( clip.optimize() ).play()
+        }
+        // const clip = gltf.animations[0]
+        // mixer.clipAction( clip.optimize() ).play()
+
+        scene.add(gltf.scene)
+    },
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+    },
+    (error) => {
+        console.log(error)
+    }
+)
 
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
@@ -59,12 +131,12 @@ animationScripts.push({
     start: 0,
     end: 101,
     func: () => {
-        let g = material.color.g
-        g -= 0.05
-        if (g <= 0) {
-            g = 1.0
-        }
-        material.color.g = g
+        // let g = material.color.g
+        // g -= 0.05
+        // if (g <= 0) {
+        //     g = 1.0
+        // }
+        // material.color.g = g
     },
 })
 
@@ -73,10 +145,10 @@ animationScripts.push({
     start: 0,
     end: 40,
     func: () => {
-        camera.lookAt(cube.position)
-        camera.position.set(0, 1, 2)
-        cube.position.z = lerp(-10, 0, scalePercent(0, 40))
-        //console.log(cube.position.z)
+        // camera.lookAt(cube.position)
+        // camera.position.set(0, 1, 2)
+        // cube.position.z = lerp(-10, 0, scalePercent(0, 40))
+        // //console.log(cube.position.z)
     },
 })
 
@@ -85,10 +157,10 @@ animationScripts.push({
     start: 40,
     end: 60,
     func: () => {
-        camera.lookAt(cube.position)
-        camera.position.set(0, 1, 2)
-        cube.rotation.z = lerp(0, Math.PI, scalePercent(40, 60))
-        //console.log(cube.rotation.z)
+        // camera.lookAt(cube.position)
+        // camera.position.set(0, 1, 2)
+        // cube.rotation.z = lerp(0, Math.PI, scalePercent(40, 60))
+        // //console.log(cube.rotation.z)
     },
 })
 
@@ -97,10 +169,10 @@ animationScripts.push({
     start: 60,
     end: 80,
     func: () => {
-        camera.position.x = lerp(0, 5, scalePercent(60, 80))
-        camera.position.y = lerp(1, 5, scalePercent(60, 80))
-        camera.lookAt(cube.position)
-        //console.log(camera.position.x + " " + camera.position.y)
+        // camera.position.x = lerp(0, 5, scalePercent(60, 80))
+        // camera.position.y = lerp(1, 5, scalePercent(60, 80))
+        // camera.lookAt(cube.position)
+        // //console.log(camera.position.x + " " + camera.position.y)
     },
 })
 
@@ -109,9 +181,9 @@ animationScripts.push({
     start: 80,
     end: 101,
     func: () => {
-        //auto rotate
-        cube.rotation.x += 0.01
-        cube.rotation.y += 0.01
+        // //auto rotate
+        // cube.rotation.x += 0.01
+        // cube.rotation.y += 0.01
     },
 })
 
@@ -144,6 +216,13 @@ function animate() {
     requestAnimationFrame(animate)
 
     playScrollAnimations()
+
+    // const delta = clock.getDelta();
+	// mixer.update( delta );
+
+    mixer.setTime(scrollPercent / 24)
+
+    composer.render()
 
     render()
 
