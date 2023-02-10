@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import Stats from 'three/examples/jsm/libs/stats.module'
+//import Stats from 'three/examples/jsm/libs/stats.module'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
@@ -9,8 +9,9 @@ import { AnimationMixer, Clock } from 'three';
 
 const scene = new THREE.Scene()
 
-const gridHelper = new THREE.GridHelper(10, 10, 0xaec6cf, 0xaec6cf)
-scene.add(gridHelper)
+// // Debug Grid
+// const gridHelper = new THREE.GridHelper(10, 10, 0xaec6cf, 0xaec6cf)
+// scene.add(gridHelper)
 
 const camera = new THREE.PerspectiveCamera(
     75,
@@ -207,12 +208,14 @@ document.body.onscroll = () => {
                 document.body.scrollHeight) -
                 document.documentElement.clientHeight)) *
         100
-    ;(document.getElementById('scrollProgress') as HTMLDivElement).innerText =
-        'Scroll Progress : ' + scrollPercent.toFixed(2)
+    // // Debug scroll progress
+    // ;(document.getElementById('scrollProgress') as HTMLDivElement).innerText =
+    //     'Scroll Progress : ' + scrollPercent.toFixed(2)
 }
 
-const stats = Stats()
-document.body.appendChild(stats.dom)
+// Debug Stats
+// const stats = Stats()
+// document.body.appendChild(stats.dom)
 
 function animate() {
     requestAnimationFrame(animate)
@@ -228,7 +231,7 @@ function animate() {
 
     render()
 
-    stats.update()
+    //stats.update()
 }
 
 function render() {
