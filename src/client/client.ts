@@ -213,23 +213,25 @@ document.body.onscroll = () => {
     //     'Scroll Progress : ' + scrollPercent.toFixed(2)
 }
 
-document.body.onmousemove = (event) => {
 
-    const sensitivity = 0.0001
+/** Mouse sensitive */
+// document.body.onmousemove = (event) => {
 
-    camera.position.y += event.movementY * sensitivity
-    camera.position.x += event.movementX * sensitivity      
-    camera.quaternion.y += event.movementX * sensitivity/10
-    camera.quaternion.x += event.movementY * sensitivity/10
+//     const sensitivity = 0.0001
 
-    // if(event.button == 0){
-    //     camera.position.y -= event.movementY * sensitivity
-    //     camera.position.x -= event.movementX * sensitivity        
-    // } else if(event.button == 2){
-    //     camera.quaternion.y -= event.movementX * sensitivity/10
-    //     camera.quaternion.x -= event.movementY * sensitivity/10
-    // }
-}
+//     camera.position.y += event.movementY * sensitivity
+//     camera.position.x += event.movementX * sensitivity      
+//     camera.quaternion.y += event.movementX * sensitivity/10
+//     camera.quaternion.x += event.movementY * sensitivity/10
+
+//     // if(event.button == 0){
+//     //     camera.position.y -= event.movementY * sensitivity
+//     //     camera.position.x -= event.movementX * sensitivity        
+//     // } else if(event.button == 2){
+//     //     camera.quaternion.y -= event.movementX * sensitivity/10
+//     //     camera.quaternion.x -= event.movementY * sensitivity/10
+//     // }
+// }
 
 // Debug Stats
 // const stats = Stats()
